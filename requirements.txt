@@ -1,0 +1,19 @@
+# Core
+torch
+torchvision
+numpy
+pillow
+opencv-python
+
+# Vision foundation tools
+transformers          # Grounding DINO
+segment-anything      # SAM
+
+# LLM / VLM access during search (not needed to run a searched program)
+openai
+anthropic
+httpx
+
+# Evaluation
+scikit-learn
+pycocotools
