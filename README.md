@@ -25,7 +25,7 @@ Vision models are downloaded from Hugging Face on first use:
 `IDEA-Research/grounding-dino-tiny`, `facebook/sam-vit-base`, `facebook/sam2-hiera-large`,
 `openai/clip-vit-large-patch14`.
 
-Search calls an LLM through OpenRouter (used in the paper), Poe or OpenAI. Save your key
+Search calls Claude Sonnet 4.6 through OpenRouter, as in the paper. Save your OpenRouter key
 locally (`keys/` is git-ignored), or set `OPENROUTER_API_KEY` instead:
 
 ```bash
