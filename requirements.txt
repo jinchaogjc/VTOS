@@ -1,19 +1,10 @@
-# Core
-torch
-torchvision
-numpy
-pillow
-opencv-python
-
-# Vision foundation tools
-transformers          # Grounding DINO
-segment-anything      # SAM
-
-# LLM / VLM access during search (not needed to run a searched program)
-openai
-anthropic
-httpx
-
-# Evaluation
-scikit-learn
-pycocotools
+numpy==2.2.6
+scipy==1.15.3
+pillow==11.3.0
+opencv-python==4.13.0.92
+torch==2.12.0
+transformers==5.5.4
+filelock==3.29.0
+openai==2.32.0
+httpx==0.28.1
+huggingface_hub==1.15.0

@@ -5,3 +5,8 @@ __pycache__/
 venv/
 *.egg-info/
 .ipynb_checkpoints/
+data/
+logs/
+keys/
+assets/
+tools/local_keys.py

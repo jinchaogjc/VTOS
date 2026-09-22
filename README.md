@@ -1,86 +1,104 @@
 # VTOS: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers
 
-Jinchao Ge<sup>1</sup>, Lingqiao Liu<sup>2\*</sup>, Shuwen Zhao<sup>3</sup>, Lei Wang<sup>1</sup>
+Code for the EMNLP 2026 paper [arXiv:2606.20728](https://arxiv.org/abs/2606.20728).
 
-<sup>1</sup>University of Wollongong &nbsp;·&nbsp;
-<sup>2</sup>Adelaide University &nbsp;·&nbsp;
-<sup>3</sup>Tianjin University of Technology &nbsp;·&nbsp;
-<sup>\*</sup>Corresponding author
+## 🌟 Overview
 
-**EMNLP 2026, Main Conference** &nbsp;·&nbsp; [arXiv:2606.20728](https://arxiv.org/abs/2606.20728)
+VTOS searches over vision programs composed of vision foundation tools (e.g., Grounding DINO,
+SAM, NMS, and slice-and-detect). During search, an LLM Producer generates candidate programs, an
+LLM Analyzer writes observer programs that diagnose failure modes of top-performing candidates,
+and their findings accumulate into a shared knowledge base across iterations. Search is
+conducted on the training set, program selection on the validation set, and evaluation on the
+test set is performed exactly once.
 
----
+![VTOS framework](figures/framework.png)
 
-> **⚠️ Code release in progress.**
-> This repository currently contains the project description and licence only.
-> The full implementation — search engine, tool library, evaluation harness and
-> the searched programs reported in the paper — will be released here **before
-> the conference**. Watch or star the repository to be notified.
+## ⚙️ Setup
 
----
+```bash
+conda create -n vtos python=3.10 -y
+conda activate vtos
+pip install -r requirements.txt
+```
 
-## What VTOS does
+Vision models are downloaded from Hugging Face on first use:
+`IDEA-Research/grounding-dino-tiny`, `facebook/sam-vit-base`, `facebook/sam2-hiera-large`,
+`openai/clip-vit-large-patch14`.
 
-Vision foundation tools — open-vocabulary detectors, segmentation models,
-post-processing operators — are strong building blocks, but how well they work
-depends on how they are *orchestrated*: which tool runs, in what order, with
-what parameters, and under which visual conditions. Existing visual-programming
-agents emit one fixed pipeline, which breaks down under dense objects,
-occlusion, small targets and domain shift.
+Search calls an LLM through OpenRouter (used in the paper), Poe or OpenAI. Save your key
+locally (`keys/` is git-ignored), or set `OPENROUTER_API_KEY` instead:
 
-VTOS searches for the orchestration instead of assuming it. It co-searches two
-kinds of executable knowledge:
+```bash
+mkdir -p keys && echo "<your-openrouter-key>" > keys/key.txt
+```
 
-- a **solution program** that composes vision tools (Grounding DINO, SAM, NMS,
-  slice-and-detect) to solve the task, and
-- an **observer program** that inspects candidate solutions, identifies how they
-  fail, and turns that into feedback for the next round.
+## 📦 Data Preparation
 
-Observations accumulate in a shared *VisionThoughts* knowledge base that
-conditions later search. What the search returns is an ordinary Python program:
-inspectable, and **free of any VLM call at deployment**.
+Both benchmarks are on Hugging Face ([tic26/VTOS-Bench](https://huggingface.co/datasets/tic26/VTOS-Bench)):
+60 train / 20 val / 100 test images each; LVIS-Count categories and PlantSeg-OOD
+species/diseases are disjoint across splits.
 
-## Scope
+```bash
+python -m tools.download_data
+```
 
-VTOS targets settings where a fixed pipeline still leaves headroom — dense,
-occluded scenes and out-of-distribution segmentation. On simpler inputs, where
-one well-calibrated detector already runs near its ceiling, a static pipeline is
-the better choice: it needs no search budget and gives up nothing. The paper
-states this limit explicitly rather than claiming general-purpose gains.
+```
+data/tasklets/
+├── lvis_count/     benchmark_{train,val,test}.json  images/
+└── plantseg_ood/   benchmark_{train,val,test}.json  images/
+```
 
-## Evaluation
+## 🚀 Quick Start: Evaluate the Searched Programs
 
-Two case studies, both scored against existing annotations so that no subjective
-labelling is involved:
+`programs/` holds the two searched programs reported in the paper. Each is scored on the test
+split directly, without search or LLM calls.
 
-| Task | Data | Source |
-|---|---|---|
-| Dense object counting | **LVIS-Count** — 180 images, 30 categories | sampled from [LVIS](https://www.lvisdataset.org/) |
-| Zero-shot disease segmentation | **PlantSeg-OOD** — 180 images, 24 species, species-disjoint splits | sampled from PlantSeg |
+```bash
+# LVIS-Count
+python -m eval.run_program --task lvis_count --code-file programs/lvis_count_sol_012_00.py
+# PlantSeg-OOD
+python -m eval.run_program --task plantseg_ood --code-file programs/plantseg_ood_sol_004_01.py
+```
 
-Both source datasets are public; the sampling protocol and splits will be
-released with the code so the subsets can be reconstructed exactly.
+## 🔍 Search
 
-## Citation
+To search for new programs from scratch.
+
+### LVIS-Count
+
+```bash
+# with the Analyzer
+python -m eval.vtos_runner --exp_id analyzer_on --split test --n-iter 15 --k-proposals 3 \
+    --analyzer-mode on --score-mode dual_rank \
+    --provider openrouter --llm-model anthropic/claude-sonnet-4.6
+# without the Analyzer
+python -m eval.vtos_runner --exp_id analyzer_off --split test --n-iter 15 --k-proposals 3 \
+    --analyzer-mode off --score-mode point_f1 \
+    --provider openrouter --llm-model anthropic/claude-sonnet-4.6
+```
+
+### PlantSeg-OOD
+
+```bash
+python -m vtos.runner.seg_orchestrator --exp-id vtos \
+    --seed-code vtos/runner/seg_seed_grounded_sam2.py \
+    --n-iter 5 --k-proposals 3 --n-train-eval 60 --analyzer-mode on --val-select-k 3 \
+    --llm-provider openrouter --llm-model anthropic/claude-sonnet-4.6
+```
+
+## 📑 Citation
 
 ```bibtex
-@article{ge2026vtos,
-  title   = {{VTOS}: Learning to Orchestrate Vision Tools by Co-Searching
-             Solutions and Observers},
-  author  = {Ge, Jinchao and Liu, Lingqiao and Zhao, Shuwen and Wang, Lei},
-  journal = {arXiv preprint arXiv:2606.20728},
-  year    = {2026},
+@inproceedings{ge2026vtos,
+  title         = {{VTOS}: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers},
+  author        = {Ge, Jinchao and Liu, Lingqiao and Zhao, Shuwen and Wang, Lei},
+  booktitle     = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing},
+  year          = {2026},
+  eprint        = {2606.20728},
+  archivePrefix = {arXiv}
 }
 ```
 
-<!--      Once the EMNLP proceedings are published, switch this to the
-     @inproceedings form with the ACL Anthology identifier. -->
+## 📜 License
 
-## Licence
-
-[MIT](LICENSE). The vision foundation tools VTOS orchestrates carry their own
-licences; check each before use.
-
-## Contact
-
-Jinchao Ge — jge@uow.edu.au
+MIT
