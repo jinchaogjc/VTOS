@@ -1,6 +1,6 @@
 # VTOS: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers
 
-Code for the EMNLP 2026 paper [arXiv:2606.20728](https://arxiv.org/abs/2606.20728).
+Code for the EMNLP 2026 paper [ACL Anthology 2026.emnlp-main.977](https://aclanthology.org/2026.emnlp-main.977/) ([arXiv:2606.20728](https://arxiv.org/abs/2606.20728)).
 
 ## 🌟 Overview
 
@@ -90,12 +90,16 @@ python -m vtos.runner.seg_orchestrator --exp-id vtos \
 
 ```bibtex
 @inproceedings{ge2026vtos,
-  title         = {{VTOS}: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers},
-  author        = {Ge, Jinchao and Liu, Lingqiao and Zhao, Shuwen and Wang, Lei},
-  booktitle     = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing},
-  year          = {2026},
-  eprint        = {2606.20728},
-  archivePrefix = {arXiv}
+  title     = {{VTOS}: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers},
+  author    = {Ge, Jinchao and Liu, Lingqiao and Zhao, Shuwen and Wang, Lei},
+  booktitle = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing},
+  month     = oct,
+  year      = {2026},
+  address   = {Budapest, Hungary},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2026.emnlp-main.977/},
+  pages     = {22551--22569},
+  ISBN      = {979-8-89176-459-0}
 }
 ```
 
