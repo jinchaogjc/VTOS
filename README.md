@@ -1,6 +1,11 @@
 # VTOS: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers
 
-Code for the EMNLP 2026 paper [ACL Anthology 2026.emnlp-main.977](https://aclanthology.org/2026.emnlp-main.977/) ([arXiv:2606.20728](https://arxiv.org/abs/2606.20728)).
+[![Paper](https://img.shields.io/badge/Paper-ACL_Anthology-ED1C24.svg)](https://aclanthology.org/2026.emnlp-main.977/)
+[![arXiv](https://img.shields.io/badge/arXiv-2606.20728-b31b1b.svg?logo=arxiv&logoColor=fff)](https://arxiv.org/abs/2606.20728)
+[![Dataset](https://img.shields.io/badge/Dataset-VTOS--Bench-FFD21E.svg?logo=huggingface&logoColor=fff)](https://huggingface.co/datasets/tic26/VTOS-Bench)
+[![License: MIT](https://img.shields.io/badge/License-MIT-4c1.svg)](https://opensource.org/licenses/MIT)
+
+Official implementation of our **EMNLP 2026** paper: "[VTOS: Learning to Orchestrate Vision Tools by Co-Searching Solutions and Observers](https://aclanthology.org/2026.emnlp-main.977/)".
 
 ## 🌟 Overview
 
